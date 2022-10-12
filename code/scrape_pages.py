@@ -10,11 +10,11 @@ def scrape_page(num):
 
     booklink = []
 
-    producttag = soup.find_all(class_="product_pad")
+    producttags = soup.find_all(class_="product_pod")
 
     booklink = [
         booklink_url + producttag.h3.a["href"]
-        for producttag in producttag
+        for producttag in producttags
     ]
 
     return booklink

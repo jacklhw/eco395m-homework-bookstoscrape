@@ -15,7 +15,7 @@ def scrape():
 
 
 def write_books_to_csv(books, path):
-    with open(path, "w+", encoding="utf-8") as file:
+    with open(CSV_PATH, "w+", encoding="utf-8") as file:
         dict_writer = csv.DictWriter(
             file,
             fieldnames=[
@@ -23,7 +23,7 @@ def write_books_to_csv(books, path):
                 "title",
                 "category",
                 "description",
-                "price_gdp",
+                "price_gbp",
                 "stock",
             ],
         )
@@ -35,7 +35,7 @@ def write_books_to_csv(books, path):
 
 def write_books_to_jsonl(books, path):
 
-    with open(path, "w+", encoding="utf-8") as file:
+    with open(JSONL_PATH, "w+", encoding="utf-8") as file:
         for book in books:
             file.write(json.dumps(book) + "\n")
 

@@ -12,7 +12,7 @@ def extract_price(price_str):
 def extract_stock(stock_str):
     """Extracts the count form the string in the product description as an int."""
 
-    return int("".join([char for char in stock_str if char.isnumeric]))
+    return int("".join([char for char in stock_str if char.isnumeric()]))
 
 
 def get_category(soup):
@@ -53,7 +53,7 @@ def get_product_information(soup):
     trtags = tabletag.find_all("tr")
     return {
         "upc": trtags[upc_idx].td.text,
-        "price_gbp": extract_price(trtags[price_idx].td.tex),
+        "price_gbp": extract_price(trtags[price_idx].td.text),
         "stock": extract_stock(trtags[stock_idx].td.text),
         }
 
