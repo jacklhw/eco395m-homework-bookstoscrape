@@ -4,13 +4,15 @@ from common import get_soup
 def extract_price(price_str):
     """Extracts the price form the string in the product description as a float."""
 
-    return None
+    return float(
+        "".join([char for char in price_str if char.isnumeric() or char == "."])
+    )
 
 
 def extract_stock(stock_str):
     """Extracts the count form the string in the product description as an int."""
 
-    return None
+    return int("".join([char for char in stock_str if char.isnumeric]))
 
 
 def get_category(soup):
@@ -19,37 +21,67 @@ def get_category(soup):
     breadcrumb_tag = soup.find_all("ul", class_="breadcrumb")[0]
     a_tags = breadcrumb_tag.find_all("a")
 
-    return None
+    return a_tags[-1].text
 
 
 def get_title(soup):
     """Extracts the title from the BeautifulSoup instance representing a book page as a string."""
 
-    return None
+    product_main_tag = soup.find_all("div", class_="product_main")[0]
+
+    return product_main_tag.h1.text
 
 
 def get_description(soup):
     """Extracts the description from the BeautifulSoup instance representing a book page as a string."""
+    product_main_tag = soup.find_all("article", class_="product_page")[0]
+    ptags = product_main_tag.find_all("p", recursive=False)
+    if not ptags:
+        return None
 
-    return None
+    return ptags[0].text
 
 
 def get_product_information(soup):
     """Extracts the product information from the BeautifulSoup instance representing a book page as a dict."""
 
-    return None
+    upc_idx = 0
+    price_idx = 2
+    stock_idx = 5
+
+    tabletag = soup.find_all("table", class_="table")[0]
+    trtags = tabletag.find_all("tr")
+    return {
+        "upc": trtags[upc_idx].td.text,
+        "price_gbp": extract_price(trtags[price_idx].td.tex),
+        "stock": extract_stock(trtags[stock_idx].td.text),
+        }
 
 
 def scrape_book(book_url):
     """Extracts all information from a book page and returns a dict."""
 
-    return None
+    soup = get_soup(book_url)
+
+    return {
+        "title": get_title(soup),
+        "category": get_category(soup),
+        "description": get_description(soup),
+        **get_product_information(soup),
+    }
 
 
 def scrape_books(book_urls):
     """Extracts all information from a list of book page and returns a list of dicts."""
-
-    return None
+    books = []
+    for book_url in book_urls:
+        try:
+            book = scrape_book(book_url)
+            books.append(book)
+        except Exception as e:
+            print("f*A error has occured scraping book {book_url}")
+            print(e)
+    return books
 
 
 if __name__ == "__main__":
